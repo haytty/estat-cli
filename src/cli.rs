@@ -7,7 +7,12 @@ mod indicator;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
+use crate::cli::data::DataArgs;
 use crate::cli::indicator::IndicatorArgs;
+use crate::cli::region::RegionArgs;
+use crate::cli::social_event::SocialEventArgs;
+use crate::cli::stat::StatArgs;
+use crate::cli::term::TermArgs;
 
 #[derive(Parser)]
 #[clap(
@@ -23,7 +28,12 @@ pub struct Cli {
 
 #[derive(Subcommand)]
 pub enum Command {
+    Region(RegionArgs),
     Indicator(IndicatorArgs),
+    Term(TermArgs),
+    SocialEvent(SocialEventArgs),
+    Stat(StatArgs),
+    Data(DataArgs),
 }
 
 pub async fn start() -> Result<()> {
@@ -32,6 +42,21 @@ pub async fn start() -> Result<()> {
     match command.command {
         Command::Indicator(args) => {
             indicator::handle(args).await
+        }
+        Command::Region(args) => {
+            region::handle(args).await
+        }
+        Command::Term(args) => {
+            term::handle(args).await
+        }
+        Command::SocialEvent(args) => {
+            social_event::handle(args).await
+        }
+        Command::Stat(args) => {
+            stat::handle(args).await
+        }
+        Command::Data(args) => {
+            data::handle(args).await
         }
     }
 }

@@ -2,7 +2,7 @@ use clap::{Parser};
 use url::{Url};
 use anyhow::Result;
 use crate::lib::http::request::Requester;
-use crate::model::indicator::Root;
+use crate::model::region::Root;
 use crate::service::create_json_file_service;
 
 #[derive(Parser)]
@@ -54,19 +54,35 @@ impl Requester for RegionArgs {
     fn to_url(&self) -> Result<Url> {
         let mut url = Url::parse(REGION_URL)?;
 
-        if let Some(lang) = &self.lang {
-            url.query_pairs_mut().append_pair("Lang", lang);
-        }
+        let mut add_param = |url: &mut Url, key: &str, value: Option<&String>| {
+            if let Some(val) = value {
+                url.query_pairs_mut().append_pair(key, val);
+            }
+        };
 
-        if let Some(parent_region_code) = &self.parent_region_code {
-            url.query_pairs_mut().append_pair("parent_region_code", parent_region_code);
-        }
+        let mut add_params = |url: &mut Url, key: &str, values: Option<&Vec<String>>| {
+            if let Some(vals) = values {
+                url.query_pairs_mut().append_pair(key, &*vals.join(","));
+            }
+        };
 
+        add_param(&mut url, "Lang", self.lang.as_ref());
+        add_params(&mut url, "RegionCode", self.region_code.as_ref());
+        add_param(&mut url, "ParentRegionCode", self.parent_region_code.as_ref());
+        add_param(&mut url, "Time", self.time.as_ref());
+        add_param(&mut url, "TimeFrom", self.time_from.as_ref());
+        add_param(&mut url, "TimeTo", self.time_to.as_ref());
+        add_param(&mut url, "RegionLevel", self.region_level.as_ref());
+        add_param(&mut url, "SearchRegionWord", self.search_region_word.as_ref());
+        add_param(&mut url, "ModifiedFrom", self.modified_from.as_ref());
+        add_param(&mut url, "ModifiedTo", self.modified_to.as_ref());
+
+        println!("{}", url);
         Ok(url)
     }
 }
 
 pub async fn handle(args: RegionArgs) -> Result<()> {
-    let result = create_json_file_service::call::<_, _, Root>(args, "/tmp/indicator.json").await?;
+    let result = create_json_file_service::call::<_, _, Root>(args, "/tmp/region.json").await?;
     Ok(result)
 }
