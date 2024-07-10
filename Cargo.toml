@@ -1,0 +1,14 @@
+[package]
+name = "estat-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.8", features = ["derive"] }
+serde = { version = "1.0.204", features = ["derive"] }
+serde_json = "1.0.120"
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+url = "2.5.2"
+thiserror = "1.0.61"
+anyhow = "1.0.86"
