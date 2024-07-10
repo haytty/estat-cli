@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_json::{Value};
 use crate::lib::record::Recorder;
-use anyhow::{anyhow, Result};
+use anyhow::{Result};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Root {

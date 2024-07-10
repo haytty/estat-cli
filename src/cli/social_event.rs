@@ -48,7 +48,7 @@ impl Requester for SocialEventArgs {
     fn to_url(&self) -> Result<Url> {
         let mut url = Url::parse(SOCIAL_EVENT_URL)?;
 
-        let mut add_param = |url: &mut Url, key: &str, value: Option<&String>| {
+        let add_param = |url: &mut Url, key: &str, value: Option<&String>| {
             if let Some(val) = value {
                 url.query_pairs_mut().append_pair(key, val);
             }

@@ -75,13 +75,13 @@ impl Requester for DataArgs {
     fn to_url(&self) -> Result<Url> {
         let mut url = Url::parse(INDICATOR_URL)?;
 
-        let mut add_param = |url: &mut Url, key: &str, value: Option<&String>| {
+        let add_param = |url: &mut Url, key: &str, value: Option<&String>| {
             if let Some(val) = value {
                 url.query_pairs_mut().append_pair(key, val);
             }
         };
 
-        let mut add_params = |url: &mut Url, key: &str, values: Option<&Vec<String>>| {
+        let add_params = |url: &mut Url, key: &str, values: Option<&Vec<String>>| {
             if let Some(vals) = values {
                 url.query_pairs_mut().append_pair(key, &*vals.join(","));
             }
