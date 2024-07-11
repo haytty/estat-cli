@@ -231,7 +231,7 @@ impl Serialize for IsSeasonal {
 
 // IndicatorResponse
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct Root {
     #[serde(rename = "GET_META_INDICATOR_INF")]
     get_meta_indicator_inf: GetMetaIndicatorInf,

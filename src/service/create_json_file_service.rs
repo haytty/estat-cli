@@ -1,15 +1,14 @@
-use std::path::Path;
-use tokio::fs;
 use anyhow::Result;
-use serde::de::DeserializeOwned;
+use tokio::io::{AsyncWriteExt};
 use crate::lib::http::request::Requester;
 use crate::lib::record::Recorder;
+use crate::lib::writer::Writer;
 
-pub async fn call<R, P, T>(requester: R, path: P) -> Result<()>
+pub async fn call<R, T, W>(requester: R, mut writer: W) -> Result<()>
 where
     R: Requester,
-    P: AsRef<Path>,
-    T: Recorder + DeserializeOwned,
+    T: Recorder,
+    W: Writer,
 {
     let body = requester.request().await?
         .text().await?;
@@ -17,7 +16,8 @@ where
     let root: T = serde_json::from_str(&body)?;
     let json = root.to_record_json()?;
 
-    fs::write(path, json).await?;
+    writer.write_all(json.as_bytes()).await?;
+    writer.flush().await?;
 
     Ok(())
 }

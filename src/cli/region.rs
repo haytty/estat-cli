@@ -1,7 +1,10 @@
+use std::collections::HashMap;
 use clap::{Parser};
 use url::{Url};
 use anyhow::Result;
-use crate::lib::http::request::Requester;
+use crate::lib::http::request::{append_url_params, join_multiple_value, Requester};
+use crate::lib::path::create_file_path;
+use crate::lib::writer::initialize_writer;
 use crate::model::region::Root;
 use crate::service::create_json_file_service;
 
@@ -46,43 +49,52 @@ pub struct RegionArgs {
 
     #[arg(long, help = "modified_to: yyyymmdd")]
     modified_to: Option<String>,
+
+    #[arg(long, help = "output_dir: output_dir_path")]
+    output_dir: Option<String>,
+
+    #[arg(long, help = "pretty: cleaning Unwanted chars")]
+    pretty: bool,
 }
 
 const REGION_URL: &str = "https://dashboard.e-stat.go.jp/api/1.0/Json/getRegionInfo";
 
 impl Requester for RegionArgs {
     fn to_url(&self) -> Result<Url> {
-        let mut url = Url::parse(REGION_URL)?;
+        let url = Url::parse(REGION_URL)?;
 
-        let add_param = |url: &mut Url, key: &str, value: Option<&String>| {
-            if let Some(val) = value {
-                url.query_pairs_mut().append_pair(key, val);
-            }
-        };
+        let region_codes = join_multiple_value(self.region_code.as_ref());
 
-        let add_params = |url: &mut Url, key: &str, values: Option<&Vec<String>>| {
-            if let Some(vals) = values {
-                url.query_pairs_mut().append_pair(key, &*vals.join(","));
-            }
-        };
+        let map: HashMap<_, _> = vec![
+            ("Lang", self.lang.as_ref()),
+            ("RegionCode", region_codes.as_ref()),
+            ("ParentRegionCode", self.parent_region_code.as_ref()),
+            ("Time", self.time.as_ref()),
+            ("TimeFrom", self.time_from.as_ref()),
+            ("TimeTo", self.time_to.as_ref()),
+            ("RegionLevel", self.region_level.as_ref()),
+            ("SearchRegionWord", self.search_region_word.as_ref()),
+            ("ModifiedFrom", self.modified_from.as_ref()),
+            ("ModifiedTo", self.modified_to.as_ref()),
+        ].into_iter().collect();
 
-        add_param(&mut url, "Lang", self.lang.as_ref());
-        add_params(&mut url, "RegionCode", self.region_code.as_ref());
-        add_param(&mut url, "ParentRegionCode", self.parent_region_code.as_ref());
-        add_param(&mut url, "Time", self.time.as_ref());
-        add_param(&mut url, "TimeFrom", self.time_from.as_ref());
-        add_param(&mut url, "TimeTo", self.time_to.as_ref());
-        add_param(&mut url, "RegionLevel", self.region_level.as_ref());
-        add_param(&mut url, "SearchRegionWord", self.search_region_word.as_ref());
-        add_param(&mut url, "ModifiedFrom", self.modified_from.as_ref());
-        add_param(&mut url, "ModifiedTo", self.modified_to.as_ref());
+        let url = append_url_params(url, &map);
 
-        println!("{}", url);
         Ok(url)
     }
 }
 
+const BASE_FILE_NAME: &str = "region.json";
+
 pub async fn handle(args: RegionArgs) -> Result<()> {
-    let result = create_json_file_service::call::<_, _, Root>(args, "/tmp/region.json").await?;
+    let path = args.output_dir.as_ref().map(|dir| create_file_path(&dir, BASE_FILE_NAME));
+
+    let writer = initialize_writer(path).await?;
+
+    let result = match args.pretty {
+        true => create_json_file_service::call::<_, Root, _>(args, writer).await?,
+        _ => create_json_file_service::call::<_, serde_json::Value, _>(args, writer).await?,
+    };
+
     Ok(result)
 }
