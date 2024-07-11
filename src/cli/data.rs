@@ -6,7 +6,7 @@ use anyhow::Result;
 use crate::lib::http::request::{append_url_params, join_multiple_value, Requester};
 use crate::lib::writer::{initialize_writer};
 use crate::model::data::Root;
-use crate::service::create_json_file_service;
+use crate::service::request_to_api_service;
 
 #[derive(Parser)]
 pub struct DataArgs {
@@ -124,7 +124,7 @@ pub async fn handle(args: DataArgs) -> Result<()> {
     };
 
     let writer = initialize_writer(path).await?;
-    let result = create_json_file_service::call::<_, Root, _>(args, writer).await?;
+    let result = request_to_api_service::call::<_, Root, _>(args, writer).await?;
 
     Ok(result)
 }

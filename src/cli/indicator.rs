@@ -6,7 +6,7 @@ use crate::lib::http::request::{append_url_params, join_multiple_value, Requeste
 use crate::lib::path::create_file_path;
 use crate::lib::writer::initialize_writer;
 use crate::model::indicator::Root;
-use crate::service::create_json_file_service;
+use crate::service::request_to_api_service;
 
 #[derive(Parser)]
 pub struct IndicatorArgs {
@@ -108,8 +108,8 @@ pub async fn handle(args: IndicatorArgs) -> Result<()> {
     let writer = initialize_writer(path).await?;
 
     let result = match args.pretty {
-        true => create_json_file_service::call::<_, Root, _>(args, writer).await?,
-        _ => create_json_file_service::call::<_, serde_json::Value, _>(args, writer).await?,
+        true => request_to_api_service::call::<_, Root, _>(args, writer).await?,
+        _ => request_to_api_service::call::<_, serde_json::Value, _>(args, writer).await?,
     };
 
     Ok(result)
