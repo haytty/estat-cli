@@ -41,20 +41,15 @@ Options:
 
 ## コマンド一覧
 
-[region](https://github.com/haytty/estat-cli/blob/master/src/cli/region/README.md)
-
-[indicator](https://github.com/haytty/estat-cli/blob/master/src/cli/indicator/README.md)
-
-[term](https://github.com/haytty/estat-cli/blob/master/src/cli/term/README.md)
-
-[social-event](https://github.com/haytty/estat-cli/blob/master/src/cli/social_event/README.md)
-
-[stat](https://github.com/haytty/estat-cli/blob/master/src/cli/stat/README.md)
-
-[data](https://github.com/haytty/estat-cli/blob/master/src/cli/data/README.md)
+- [region](https://github.com/haytty/estat-cli/blob/master/src/cli/region/README.md)
+- [indicator](https://github.com/haytty/estat-cli/blob/master/src/cli/indicator/README.md)
+- [term](https://github.com/haytty/estat-cli/blob/master/src/cli/term/README.md)
+- [social-event](https://github.com/haytty/estat-cli/blob/master/src/cli/social_event/README.md)
+- [stat](https://github.com/haytty/estat-cli/blob/master/src/cli/stat/README.md)
+- [data](https://github.com/haytty/estat-cli/blob/master/src/cli/data/README.md)
 
 ## リンク
 
-[eStat公式サイト](https://www.e-stat.go.jp/)
-[eStatダッシュボードページ](https://dashboard.e-stat.go.jp/)
-[eStatAPIページ](https://dashboard.e-stat.go.jp/static/api)
+- [eStat公式サイト](https://www.e-stat.go.jp/)
+- [eStatダッシュボードページ](https://dashboard.e-stat.go.jp/)
+- [eStatAPIページ](https://dashboard.e-stat.go.jp/static/api)
