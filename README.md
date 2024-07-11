@@ -8,11 +8,11 @@ eStat CLIは、日本の統計データを簡単に取得するためのコマ�
 
 1. Githubからソースコードをダウンロード
     ```bash
-    git clone git@github.com:haytty/add.git
+    git clone git@github.com:haytty/estat-cli.git
     ```
 2. リポジトリに移動
     ```bash
-    cd ./add
+    cd ./estat-cli
     ```
 3. cargoを使ってインストール
     ```bash
@@ -56,4 +56,5 @@ Options:
 ## リンク
 
 [eStat公式サイト](https://www.e-stat.go.jp/)
+[eStatダッシュボードページ](https://dashboard.e-stat.go.jp/)
 [eStatAPIページ](https://dashboard.e-stat.go.jp/static/api)
